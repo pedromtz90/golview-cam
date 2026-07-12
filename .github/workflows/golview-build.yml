@@ -1,0 +1,25 @@
+name: Golview Build
+
+on:
+  push:
+    branches: [golview]
+  pull_request:
+    branches: [golview]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - name: Create user config
+        run: |
+          cp User.template.xcconfig Config/User.xcconfig
+      - name: Build (sin firma — valida que el fork compila)
+        run: |
+          xcodebuild \
+              -scheme Moblin \
+              -skipPackagePluginValidation \
+              build \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGNING_REQUIRED=NO
