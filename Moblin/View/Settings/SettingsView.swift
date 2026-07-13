@@ -18,6 +18,11 @@ struct SettingsView: View {
                     Label("Streams", systemImage: "dot.radiowaves.left.and.right")
                 }
                 NavigationLink {
+                    GolviewSettingsView()
+                } label: {
+                    Label("Golview", systemImage: "soccerball")
+                }
+                NavigationLink {
                     ScenesSettingsView(database: database)
                 } label: {
                     Label("Scenes", systemImage: "photo.on.rectangle")
