@@ -1,3 +1,4 @@
+import CoreVideo
 import DockKit
 import Foundation
 import Spatial
@@ -64,6 +65,22 @@ class Gimbal {
 
     func cancelMovement() {
         setMovement(velocity: .init(x: 0, y: 0, z: 0))
+    }
+
+    // Seguimiento de objeto propio (p. ej. un balón): se mandan observaciones a DockKit y el gimbal
+    // genera y aplica los vectores de tracking. Para usarlo hay que apagar antes el tracking de
+    // sistema (setTracking(on: false)), como hace FoloCam. El `image` deja que DockKit afine con el frame.
+    func track(
+        observations: [DockAccessory.Observation],
+        cameraInformation: DockAccessory.CameraInformation,
+        image: CVPixelBuffer
+    ) {
+        Task { @MainActor [weak self] in
+            guard let self, let accessory = self.accessory else {
+                return
+            }
+            _ = try? await accessory.track(observations, cameraInformation: cameraInformation, image: image)
+        }
     }
 
     func getCurrentOrientation() async throws -> Vector3D? {
